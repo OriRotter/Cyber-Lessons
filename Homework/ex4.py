@@ -61,10 +61,10 @@ def solver(y, x, maze):
         r = solver(y + 1, x, maze)
         if r is not None:
             return r
-        r = solver(y, x - 1, maze)
+        r = solver(y - 1, x, maze)
         if r is not None:
             return r
-        r = solver(y - 1, x, maze)
+        r = solver(y, x - 1, maze)
         if r is not None:
             return r
         maze[y][x] = '3'
