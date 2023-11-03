@@ -1,93 +1,44 @@
-def factorial(num):
-    if num <= 0:
-        return 1
-    return num * factorial(num - 1)
+from Homework.Data.ex4.NodeTree import NodeTree
+
+lastR = NodeTree(_data=1)
+lastRL = NodeTree(_data=4)
+secR = NodeTree(_data =2, _right= lastR, _left=lastRL)
+
+lastLR = NodeTree(_data=6)
+firstR = NodeTree(_data=8, _left=lastLR)
+
+root = NodeTree(_data=5, _left=secR, _right=firstR)
+
+def printTree(root):
+    if root is None:
+        return
+    print(root.getData())
+    print("R ", end="")
+    printTree(root.getRight())
+    print("L ", end="")
+    printTree(root.getLeft())
 
 
-def readMaze(filename):
-    with open(f"Data/ex4/{filename}", 'r') as f:
-        mazeF = f.readlines()
-    maze = []
-    for line in mazeF:
-        maze.append(list(line.replace('\n', '')))
 
-    return maze
-
-
-def findStart(maze):
-    for y, line in enumerate(maze):
-        if line[0] == '1':
-            return 0, y
+# אם צריך לעשות את המשימה ביעילות כי יודעים שהעץ מסודר תגיד לי אני אגיש שוב
+def countAppears(root,value):
+    if root is None:
+        return 0
+    if root.getData() == value:
+        return 1+countAppears(root.getLeft(),value)+countAppears(root.getRight(),value)
+    return countAppears(root.getLeft(), value) + countAppears(root.getRight(), value)
 
 
-def solveMaze(filename="maze.txt"):
-    maze = readMaze(filename)
-    try:
-        x, y = findStart(maze)
-        printMaze(maze)
-        solve = solver(y, x, maze)
-        try:
-            printMaze(solve)
-        except TypeError:
-            print("Can not be solved.")
-    except TypeError:
-        print("Can not be solved. no exit or entrance.")
+def numberContain(root,num):
+    numList = list(str(num))
+    for i in numList:
+        if countAppears(root,int(i)) == 0:
+            print("not all the numbers are in the tree.")
+            return False
+    print("all the numbers are in the tree.")
+    return True
 
-
-def printMaze(maze):
-    mazeT = ""
-    for line in maze:
-        for char in line:
-            mazeT += char
-        mazeT = mazeT.replace('0', '⬛')
-        mazeT = mazeT.replace('1', '⬜')
-        mazeT = mazeT.replace('2', '🔳')
-        mazeT = mazeT.replace('3', '⬜')
-        mazeT += "\n"
-    print(mazeT)
-
-
-def solver(y, x, maze):
-    if (y == len(maze) - 1 and maze[y][x] == '1') or (x == len(maze[0]) - 1 and maze[y][x] == '1'):
-        maze[y][x] = '2'
-        print("Solved.")
-        return maze
-    if maze[y][x] != '0' and maze[y][x] != '2' and maze[y][x] != '3':
-        maze[y][x] = '2'
-
-        r = solver(y, x + 1, maze)
-        if r is not None:
-            return r
-        r = solver(y + 1, x, maze)
-        if r is not None:
-            return r
-        r = solver(y - 1, x, maze)
-        if r is not None:
-            return r
-        r = solver(y, x - 1, maze)
-        if r is not None:
-            return r
-        maze[y][x] = '3'
-
-
-def main():
-    choice = input("Enter 1 to calculate factorial enter 2 to solve a maze (enter -1 to exit): ")
-    if choice == '1':
-        try:
-            num = int(input("enter a num to calculate: "))
-            print(factorial(num))
-        except ValueError:
-            print("Error enter a valid int")
-
-    elif choice == '2':
-        filename = input("Enter filename to solve the maze (press enter to solve the default): ")
-        if len(filename) == 0:
-            solveMaze()
-        else:
-            solveMaze(filename)
-    elif choice == '-1':
-        print("Bye bye!")
-
-
-if __name__ == '__main__':
-    main()
+printTree(root)
+num = countAppears(root,4)
+print(num)
+numberContain(root,586)

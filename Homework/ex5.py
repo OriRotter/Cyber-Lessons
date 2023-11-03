@@ -1,44 +1,26 @@
-from NodeTree import NodeTree
+class Square:
+    def __init__(self, side1):
+        self.side1 = side1
+        self.side2 = side1
 
-lastR = NodeTree(_data=1)
-lastRL = NodeTree(_data=4)
-secR = NodeTree(_data =2, _right= lastR, _left=lastRL)
+    def get_area(self):
+        return self.side1 * self.side2
 
-lastLR = NodeTree(_data=6)
-firstR = NodeTree(_data=8, _left=lastLR)
+    def __add__(self,other):
+        return self.get_area()+other.get_area()
 
-root = NodeTree(_data=5, _left=secR, _right=firstR)
 
-def printTree(root):
-    if root is None:
-        return
-    print(root.getData())
-    print("R ", end="")
-    printTree(root.getRight())
-    print("L ", end="")
-    printTree(root.getLeft())
+class Rectangle(Square):
+    def __init__(self, side1, side2):
+        super().__init__(side1)
+        self.side2 = side2
 
 
 
-# אם צריך לעשות את המשימה ביעילות כי יודעים שהעץ מסודר תגיד לי אני אגיש שוב
-def countAppears(root,value):
-    if root is None:
-        return 0
-    if root.getData() == value:
-        return 1+countAppears(root.getLeft(),value)+countAppears(root.getRight(),value)
-    return countAppears(root.getLeft(), value) + countAppears(root.getRight(), value)
+if __name__ == "__main__":
+    s = Square(5)
+    r = Rectangle(8, 2)
 
-
-def numberContain(root,num):
-    numList = list(str(num))
-    for i in numList:
-        if countAppears(root,int(i)) == 0:
-            print("not all the numbers are in the tree.")
-            return False
-    print("all the numbers are in the tree.")
-    return True
-
-printTree(root)
-num = countAppears(root,4)
-print(num)
-numberContain(root,586)
+    print(f"square area = {s.get_area()}")
+    print(f"rectangle area = {r.get_area()}")
+    print(f"aggregated area is: {s+r}")
